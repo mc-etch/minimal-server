@@ -1,16 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func HandleHello(w http.ResponseWriter, _ *http.Request) {
-	fmt.Fprint(w, "Hello \n")
+	w.Write([]byte("Hello\n"))
 }
 
 func main() {
-	http.HandleFunc("/", HandleHello)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r := mux.NewRouter()
+	r.HandleFunc("/", HandleHello)
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
