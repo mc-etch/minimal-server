@@ -1,12 +1,9 @@
-FROM golang:1.19.5-alpine3.17
-
-WORKDIR /app
-COPY go.mod .
-
-RUN go mod download
+FROM golang:alpine AS builder 
+RUN apk update && apk add --no-cache gitWORKDIR $GOPATH/src/mypackage/myapp/
 COPY . .
+RUN go get -d -v
+RUN go build -o /go/bin/hello
 
-RUN go build -o /godocker
-EXPOSE 8080
-
-CMD [ "/godocker" ]
+FROM scratch 
+COPY --from=builder /go/bin/hello /go/bin/hello 
+ENTRYPOINT ["/go/bin/hello"]
